@@ -15,7 +15,6 @@ def generate_launch_description():
     )
 
     # 2. Lifecycle Manager
-    # This manages the state of the costmap (Unconfigured -> Inactive -> Active)
     lifecycle_manager = Node(
         package='nav2_lifecycle_manager',
         executable='lifecycle_manager',
