@@ -18,7 +18,7 @@ namespace astar{
 
         //subscribes
         map_sub_ = this->create_subscription<nav_msgs::msg::OccupancyGrid>(
-            "/map",
+            "/costmap/costmap",
             map_qos,
             std::bind(&AStarPlanner::map_callback, this, std::placeholders::_1));
         
@@ -122,10 +122,12 @@ namespace astar{
                 int8_t val = map_->data[idx];
 
                 //obstacles >=50 ==-1 ==100
-                bool is_obstacle = (val == 100 || val == -1 || val >= 50);
+                bool is_obstacle = (val == -1 || val >= 99);
+
+                double map_cost = (val > 0) ? static_cast<double>(val) : 0.0;
 
                 if (!is_obstacle){
-                    new_node.g_cost = active_node.g_cost + 1;
+                    new_node.g_cost = active_node.g_cost + 1 + (map_cost * 0.5);
                     new_node.h_cost = calHeuristic(new_node, goal_node);
                     new_node.f_cost = new_node.g_cost + new_node.h_cost;
                     new_node.prev = std::make_shared<GraphNode>(active_node);
